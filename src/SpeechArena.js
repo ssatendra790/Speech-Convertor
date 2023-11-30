@@ -1,33 +1,59 @@
 import React, { useState } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import useClipboard from 'react-copy-to-clipboard';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const SpeechArena = () => {
-  const [text, setText] = useState();
-  const [isCopied, setCopied] = useClipboard(text)
+  const [text, setText] = useState('');
+  const [isCopied, setCopied] = useState(false);
 
   const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
-  const startListening = () => SpeechRecognition.startListening({ continuous: true, language:'en-IN'});
+  const startListening = () => SpeechRecognition.startListening({ continuous: true, language: 'en-IN' });
+
   if (!browserSupportsSpeechRecognition) {
-    return null
+    return null;
   }
+
+  const handleCopy = () => {
+    setText(transcript);
+    setCopied(true);
+  };
 
   return (
     <div className='font-sans text-sky-950 justify-center content-center m-10 '>
-
       <p className=' p-10'>Microphone: {listening ? 'ON' : 'OFF'}</p>
 
-      <p onClick={()=>setText({transcript})} className='p-10 m-10 border border-solid'>{transcript}</p>
+      <p onClick={() => setText(transcript)} className='p-10 m-10 border border-solid'>
+        {transcript}
+      </p>
 
-      <button onClick={setCopied} className='text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700'> {isCopied ? 'Copied!' : 'Copy to clipboard'} </button>
+      <CopyToClipboard text={text} onCopy={handleCopy}>
+        <button
+          className='text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700'
+        >
+          {isCopied ? 'Copied!' : 'Copy to clipboard'}
+        </button>
+      </CopyToClipboard>
 
-      <button onClick={startListening} className='text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700'>Start Recording</button>
+      <button
+        onClick={startListening}
+        className='text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700'
+      >
+        Start Recording
+      </button>
 
-      <button onClick={SpeechRecognition.stopListening} className='text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700'>Stop Recording</button>
+      <button
+        onClick={SpeechRecognition.stopListening}
+        className='text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700'
+      >
+        Stop Recording
+      </button>
 
-      <button onClick={resetTranscript}  className='text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700'>Reset</button>
-
-
+      <button
+        onClick={resetTranscript}
+        className='text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700'
+      >
+        Reset
+      </button>
     </div>
   );
 };
