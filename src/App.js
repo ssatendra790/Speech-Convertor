@@ -3,7 +3,7 @@ import SpeechArena from './SpeechArena';
 
 function App() {
   return (
-    <div>
+    <div className='bg-slate-800 h-screen'>
        <SpeechArena/>
     </div>
   );
